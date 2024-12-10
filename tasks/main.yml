@@ -6,8 +6,10 @@
 
 - name: Update apt cache
   apt: update_cache=yes cache_valid_time=3600
-  when: not msmtp_config_only
-  
+  when:
+    - not msmtp_config_only
+    - ansible_os_family == "Debian"
+
 - name: Ensure MSMTP related packages are installed
   package:
     name: "{{ item }}"
@@ -33,7 +35,7 @@
   with_items:
     - "{{ msmtp_accounts }}"
   no_log: "{{ msmtp_no_log }}"
-    
+
 - name: Ensure account specific aliases conf files are present
   template:
     src: "aliases.j2"

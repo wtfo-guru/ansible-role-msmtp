@@ -1,0 +1,10 @@
+---
+# vars/Redhat.yml
+
+msmtp_rcdir_group: mail
+msmtp_rcfile_group: mail
+msmtp_logfile_group: mail
+
+msmtp_packages:
+  - msmtp
+  - ca-certificates
