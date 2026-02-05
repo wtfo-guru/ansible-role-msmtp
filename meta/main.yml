@@ -5,10 +5,10 @@ dependencies: []
 
 galaxy_info:
   role_name: msmtp
-  author: Akman
+  author: wtforg
   description: MSMTP installation and configuration for Linux.
   license: "license (BSD, MIT)"
-  min_ansible_version: 2.2
+  min_ansible_version: "2.2"
   platforms:
     - name: Ubuntu
       versions:
@@ -17,9 +17,17 @@ galaxy_info:
         - saucy
         - trusty
         - xenial
+    - name: "Fedora"
+      versions:
+        - "42"
+        - "43"
+    - name: "Debian"
+      versions:
+        - "bookworm"
+        - "trixie"
   galaxy_tags:
     - server
     - mail
     - smtp
 
-allow_duplicates: yes
+allow_duplicates: true

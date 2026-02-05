@@ -1,0 +1,57 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+---
+# exclude: ^attic/.*|^base/server-setups/$|^scripts/scratch.sh$
+default_install_hook_types: ["pre-commit", "commit-msg"]
+default_stages: ["pre-commit"]
+repos:
+  - repo: local
+    hooks:
+      - id: j2lint
+        name: Jinja2 Lint Check
+        description: Checks syntax of jinja2 templates
+        entry: /data/share/bin/j2lint
+        files: \.j2$
+        language: script
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: check-added-large-files
+      - id: check-ast
+      # - id: check-json
+      - id: check-merge-conflict
+      - id: check-xml
+      - id: check-yaml
+      - id: debug-statements
+      - id: end-of-file-fixer
+      - id: requirements-txt-fixer
+      - id: mixed-line-ending
+        args: ['--fix=auto']  # replace 'auto' with 'lf' to enforce Linux/Mac line endings or 'crlf' for Windows
+      - id: no-commit-to-branch
+        args: ['--branch', 'main']
+
+  - repo: https://gitlab.com/bmares/check-json5
+    rev: v1.0.1
+    hooks:
+      - id: check-json5
+
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.12.0
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
+
+  - repo: https://github.com/ansible/ansible-lint
+    rev: v26.1.1
+    hooks:
+      - id: ansible-lint
+        name: Ansible-lint
+        description: This hook runs ansible-lint.
+        entry: bash -c 'env ANSIBLE_LINT_NODEPS=1 python3 -m ansiblelint -v --force-color'
+        language: python
+        pass_filenames: false
+        always_run: true
+
+...

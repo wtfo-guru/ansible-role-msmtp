@@ -2,23 +2,25 @@
 # tasks/main.yml
 
 - name: Include OS specific variables
-  include_vars: "{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ ansible_facts.os_family }}.yml"
 
 - name: Update apt cache
-  apt: update_cache=yes cache_valid_time=3600
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
   when:
     - not msmtp_config_only
-    - ansible_os_family == "Debian"
+    - ansible_facts.os_family == "Debian"
 
 - name: Ensure MSMTP related packages are installed
-  package:
+  ansible.builtin.package:
     name: "{{ item }}"
     state: "present"
   with_items: "{{ msmtp_packages }}"
   when: not msmtp_config_only
 
 - name: Ensure msmtp conf dir presents
-  file:
+  ansible.builtin.file:
     path: "/etc/msmtp"
     state: "directory"
     mode: "{{ msmtp_rcdir_mode }}"
@@ -26,7 +28,7 @@
     group: "{{ msmtp_rcdir_group }}"
 
 - name: Ensure account specific msmtprc conf files are present
-  template:
+  ansible.builtin.template:
     src: "msmtprc.j2"
     dest: "/etc/msmtp/msmtprc{{ (item.name == 'default') | ternary('.000.', '.') }}{{ item.name }}"
     mode: "{{ msmtp_rcfile_mode }}"
@@ -37,7 +39,7 @@
   no_log: "{{ msmtp_no_log }}"
 
 - name: Ensure account specific aliases conf files are present
-  template:
+  ansible.builtin.template:
     src: "aliases.j2"
     dest: "/etc/msmtp/aliases{{ (item.name == 'default') | ternary('.000.', '.') }}{{ item.name }}"
     mode: "{{ msmtp_rcfile_mode }}"
@@ -48,7 +50,7 @@
   no_log: "{{ msmtp_no_log }}"
 
 - name: Ensure account specific log files are exist and have valid permissions
-  copy:
+  ansible.builtin.copy:
     content: ""
     force: "no"
     dest: "{{ item.logfile }}"
@@ -61,7 +63,7 @@
   no_log: "{{ msmtp_no_log }}"
 
 - name: Assemble msmtp config file from fragmets
-  assemble:
+  ansible.builtin.assemble:
     src: /etc/msmtp
     dest: /etc/msmtprc
     mode: "{{ msmtp_rcfile_mode }}"
@@ -69,3 +71,4 @@
     group: "{{ msmtp_rcfile_group }}"
     delimiter: ""
     regexp: "^msmtprc\\..+"
+...
